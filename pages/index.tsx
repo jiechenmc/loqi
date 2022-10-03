@@ -32,7 +32,13 @@ const Home: NextPage = () => {
   };
   return (
     <div>
-      <form id="messageForm" method="POST">
+      <form
+        id="messageForm"
+        method="POST"
+        onSubmit={(e) => {
+          e.preventDefault();
+        }}
+      >
         <label htmlFor="message">Message:</label>
         <input className="border" type="text" id="message" name="message" />
         <button type="button" onClick={handleSend}>
