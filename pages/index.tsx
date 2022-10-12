@@ -1,4 +1,5 @@
 import type { NextPage } from "next";
+import { database } from "../firebaseConfig";
 
 interface ToxicityResponse {
   source: string;
