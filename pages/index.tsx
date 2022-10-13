@@ -2,7 +2,7 @@ import type { NextPage } from "next";
 import { database } from "../firebaseConfig";
 import { ref, set, onValue } from "firebase/database";
 import { v4 as uuidv4 } from "uuid";
-import { createElement, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 interface ToxicityResponse {
   source: string;
