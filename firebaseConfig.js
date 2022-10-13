@@ -1,7 +1,7 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
-import { getFirestore } from "firebase/firestore";
+// import { getAnalytics } from "firebase/analytics";
+import { getDatabase } from "firebase/database";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -13,11 +13,12 @@ const firebaseConfig = {
   projectId: process.env.FB_projectId,
   storageBucket: process.env.FB_storageBucket,
   messagingSenderId: process.env.FB_messagingSenderId,
-  appId: process.env.appId,
-  measurementId: process.env.measurementId,
+  appId: process.env.FB_appId,
+  measurementId: process.env.FB_measurementId,
+  databaseURL: "https://loqi-loqi-default-rtdb.firebaseio.com/",
 };
 
 // Initialize Firebase
 export const app = initializeApp(firebaseConfig);
-export const analytics = getAnalytics(app);
-export const database = getFirestore(app);
+// export const analytics = getAnalytics(app);
+export const database = getDatabase(app);

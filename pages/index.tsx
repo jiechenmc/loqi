@@ -1,12 +1,21 @@
 import type { NextPage } from "next";
 import { database } from "../firebaseConfig";
+import { ref, set, onValue } from "firebase/database";
+import { v4 as uuidv4 } from "uuid";
+import { createElement, useEffect, useState } from "react";
 
 interface ToxicityResponse {
   source: string;
   toxicity: number;
 }
 
+interface Message {
+  content: string;
+}
+
 const Home: NextPage = () => {
+  const [msgs, setMsgs] = useState<JSX.Element[]>();
+
   const handleSend = () => {
     const msgForm = document.getElementById("messageForm") as HTMLFormElement;
     const fd = new FormData(msgForm);
@@ -19,18 +28,33 @@ const Home: NextPage = () => {
       body: payload,
     }).then((resp) => {
       resp.json().then(({ source, toxicity }: ToxicityResponse) => {
-        const src = document.createElement("p");
-        const toxic = document.createElement("p");
-        src.textContent = `Source: ${source}`;
-        toxic.textContent = `Toxicity Rating: ${toxicity}`;
-        msgForm.appendChild(src);
-        msgForm.appendChild(toxic);
         if (toxicity > 0.01) {
-          alert("Don't say that bro");
+          alert(`Source: ${source}\nToxicity Rating: ${toxicity}`);
+        } else {
+          const messageID = uuidv4();
+          set(ref(database, "global/messages/" + messageID), {
+            content: source,
+          });
         }
       });
     });
   };
+
+  const messagesRef = ref(database, "global/messages/");
+
+  useEffect(() => {
+    onValue(messagesRef, (snapshot) => {
+      const data = snapshot.val();
+      if (data != null) {
+        let tst = Object.values(data).map((e) => {
+          let m = e as Message;
+          return <div key={uuidv4()}>{m.content}</div>;
+        });
+        setMsgs(tst);
+      }
+    });
+  }, []);
+
   return (
     <div>
       <form
@@ -46,6 +70,7 @@ const Home: NextPage = () => {
           Send
         </button>
       </form>
+      <div id="messageBox">{msgs}</div>
     </div>
   );
 };
