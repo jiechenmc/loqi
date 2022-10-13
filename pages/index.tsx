@@ -2,7 +2,7 @@ import type { NextPage } from "next";
 import { database } from "../firebaseConfig";
 import { ref, set, onValue } from "firebase/database";
 import { v4 as uuidv4 } from "uuid";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 
 interface ToxicityResponse {
   source: string;
@@ -10,11 +10,13 @@ interface ToxicityResponse {
 }
 
 interface Message {
+  author: string;
   content: string;
 }
 
 const Home: NextPage = () => {
   const [msgs, setMsgs] = useState<JSX.Element[]>();
+  const authorRef = useRef<HTMLInputElement>(null);
 
   const handleSend = () => {
     const msgForm = document.getElementById("messageForm") as HTMLFormElement;
@@ -32,8 +34,18 @@ const Home: NextPage = () => {
           alert(`Source: ${source}\nToxicity Rating: ${toxicity}`);
         } else {
           const messageID = uuidv4();
+          let authorName = "";
+
+          if (authorRef.current) {
+            authorName =
+              authorRef.current.value !== ""
+                ? authorRef.current.value
+                : "Anonymous";
+          }
+
           set(ref(database, "global/messages/" + messageID), {
             content: source,
+            author: authorName,
           });
         }
       });
@@ -48,7 +60,11 @@ const Home: NextPage = () => {
       if (data != null) {
         let tst = Object.values(data).map((e) => {
           let m = e as Message;
-          return <div key={uuidv4()}>{m.content}</div>;
+          return (
+            <div key={uuidv4()}>
+              {m.author} said: {m.content}
+            </div>
+          );
         });
         setMsgs(tst);
       }
@@ -66,6 +82,14 @@ const Home: NextPage = () => {
       >
         <label htmlFor="message">Message:</label>
         <input className="border" type="text" id="message" name="message" />
+        <label htmlFor="message">Author:</label>
+        <input
+          ref={authorRef}
+          className="border"
+          type="text"
+          id="author"
+          name="author"
+        />
         <button type="button" onClick={handleSend}>
           Send
         </button>
