@@ -1,4 +1,4 @@
-import { database } from "../firebaseConfig";
+import { database } from "./App";
 import { ref, set, onValue } from "firebase/database";
 import { v4 as uuidv4 } from "uuid";
 import { useEffect, useState, useRef } from "react";
