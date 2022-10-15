@@ -1,5 +1,6 @@
 import useEmailAndPassword from "./hooks/useSignUpEmailAndPassword";
-import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
+import { Dispatch, SetStateAction, useRef, useState } from "react";
+import useToxicityData from "./hooks/useToxicityData";
 
 interface LoginPageInterface {
   setLoginStatus: Dispatch<SetStateAction<boolean>>;
@@ -11,16 +12,17 @@ const Login = ({ setLoginStatus }: LoginPageInterface) => {
   const emailRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
 
-  setLoginStatus(useEmailAndPassword({ email: email, password: password }));
+  setLoginStatus(useEmailAndPassword(email, password));
 
+  useToxicityData({ message: "fuck you" });
   const handleSignUp = () => {
     if (emailRef.current && passwordRef.current) {
       const em = emailRef.current.value;
       const pw = passwordRef.current.value;
-      if (em && pw) {
-        setEmail(em);
-        setPassword(pw);
-      }
+
+      setEmail(em);
+      setPassword(pw);
+
       emailRef.current.value = "";
       passwordRef.current.value = "";
     }

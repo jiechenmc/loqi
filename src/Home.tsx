@@ -1,4 +1,4 @@
-import { database } from "./App";
+import { database, auth } from "./App";
 import { ref, set, onValue } from "firebase/database";
 import { v4 as uuidv4 } from "uuid";
 import { useEffect, useState, useRef } from "react";
@@ -15,7 +15,6 @@ interface Message {
 
 const Home = () => {
   const [msgs, setMsgs] = useState<JSX.Element[]>();
-  const authorRef = useRef<HTMLInputElement>(null);
 
   const handleSend = () => {
     const msgForm = document.getElementById("messageForm") as HTMLFormElement;
@@ -33,14 +32,7 @@ const Home = () => {
           alert(`Source: ${source}\nToxicity Rating: ${toxicity}`);
         } else {
           const messageID = uuidv4();
-          let authorName = "";
-
-          if (authorRef.current) {
-            authorName =
-              authorRef.current.value !== ""
-                ? authorRef.current.value
-                : "Anonymous";
-          }
+          let authorName = auth.currentUser?.email;
 
           set(ref(database, "global/messages/" + messageID), {
             content: source,
@@ -81,14 +73,6 @@ const Home = () => {
       >
         <label htmlFor="message">Message:</label>
         <input className="border" type="text" id="message" name="message" />
-        <label htmlFor="message">Author:</label>
-        <input
-          ref={authorRef}
-          className="border"
-          type="text"
-          id="author"
-          name="author"
-        />
         <button type="button" onClick={handleSend}>
           Send
         </button>
