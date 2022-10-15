@@ -3,8 +3,6 @@ import { ref, set, onValue } from "firebase/database";
 import { v4 as uuidv4 } from "uuid";
 import { useEffect, useState, useRef } from "react";
 
-// state is 1 step behind
-
 interface ToxicityResponse {
   source: string;
   toxicity: number;
@@ -18,7 +16,10 @@ interface Message {
 const Home = () => {
   const [msgs, setMsgs] = useState<JSX.Element[]>();
   const [message, setMessage] = useState("");
-  const [tox, setTox] = useState(0.0);
+  const [tox, setTox] = useState<ToxicityResponse>({
+    source: "",
+    toxicity: 0.0,
+  });
   const inputEl = useRef<HTMLInputElement>(null);
 
   const handleSend = () => {
