@@ -1,17 +1,6 @@
 import { useState } from "react";
 import Home from "./Home";
 import Login from "./Login";
-
-function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-
-  return (
-    <div className="App">
-      {isLoggedIn ? <Home /> : <Login setLoginStatus={setIsLoggedIn} />}
-    </div>
-  );
-}
-
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getDatabase } from "firebase/database";
@@ -30,5 +19,15 @@ const firebaseConfig = {
 export const app = initializeApp(firebaseConfig);
 export const database = getDatabase(app);
 export const auth = getAuth(app);
+
+function App() {
+  const [isLoggedIn, setIsLoggedIn] = useState(auth.currentUser !== null);
+
+  return (
+    <div className="App">
+      {isLoggedIn ? <Home /> : <Login setLoginStatus={setIsLoggedIn} />}
+    </div>
+  );
+}
 
 export default App;

@@ -3,6 +3,8 @@ import { ref, set, onValue } from "firebase/database";
 import { v4 as uuidv4 } from "uuid";
 import { useEffect, useState, useRef } from "react";
 
+// state is 1 step behind
+
 interface ToxicityResponse {
   source: string;
   toxicity: number;
@@ -15,37 +17,18 @@ interface Message {
 
 const Home = () => {
   const [msgs, setMsgs] = useState<JSX.Element[]>();
+  const [message, setMessage] = useState("");
+  const [tox, setTox] = useState(0.0);
+  const inputEl = useRef<HTMLInputElement>(null);
 
   const handleSend = () => {
-    const msgForm = document.getElementById("messageForm") as HTMLFormElement;
-    const fd = new FormData(msgForm);
-
-    const payload = JSON.stringify(Object.fromEntries(fd));
-
-    fetch("/api/toxicity", {
-      headers: { "Content-Type": "application/json" },
-      method: "POST",
-      body: payload,
-    }).then((resp) => {
-      resp.json().then(({ source, toxicity }: ToxicityResponse) => {
-        if (toxicity > 0.01) {
-          alert(`Source: ${source}\nToxicity Rating: ${toxicity}`);
-        } else {
-          const messageID = uuidv4();
-          let authorName = auth.currentUser?.email;
-
-          set(ref(database, "global/messages/" + messageID), {
-            content: source,
-            author: authorName,
-          });
-        }
-      });
-    });
+    if (inputEl.current) {
+      setMessage(inputEl.current.value);
+    }
   };
 
-  const messagesRef = ref(database, "global/messages/");
-
   useEffect(() => {
+    const messagesRef = ref(database, "global/messages/");
     onValue(messagesRef, (snapshot) => {
       const data = snapshot.val();
       if (data != null) {
@@ -62,6 +45,26 @@ const Home = () => {
     });
   }, []);
 
+  useEffect(() => {
+    //       if (toxicity > 0.01) {
+    //         alert(`Source: ${source}\nToxicity Rating: ${toxicity}`);
+    //       } else {
+    //         const messageID = uuidv4();
+    //         let authorName = auth.currentUser?.email;
+
+    //         set(ref(database, "global/messages/" + messageID), {
+    //           content: source,
+    //           author: authorName,
+    //         });
+    //       }
+    fetch("/api/toxicity", {
+      headers: { "Content-Type": "application/json" },
+      method: "POST",
+      body: JSON.stringify({ message: message }),
+    }).then((resp) => resp.json().then((d) => setTox(d)));
+  }, [message]);
+
+  console.log(tox);
   return (
     <div>
       <form
@@ -72,7 +75,13 @@ const Home = () => {
         }}
       >
         <label htmlFor="message">Message:</label>
-        <input className="border" type="text" id="message" name="message" />
+        <input
+          ref={inputEl}
+          className="border"
+          type="text"
+          id="message"
+          name="message"
+        />
         <button type="button" onClick={handleSend}>
           Send
         </button>

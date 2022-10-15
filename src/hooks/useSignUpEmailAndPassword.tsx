@@ -7,7 +7,6 @@ const useSignUpEmailAndPassword = (
   password: string
 ): boolean => {
   const [isSucessful, setIsSucessful] = useState(false);
-
   useEffect(() => {
     if (email !== "" || password !== "") {
       createUserWithEmailAndPassword(auth, email, password)
