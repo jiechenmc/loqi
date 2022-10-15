@@ -8,6 +8,6 @@ RUN yarn
 
 COPY ./ ./
 
-CMD ["yarn", "dev"]
+CMD ["yarn", "dev", "--host", "0.0.0.0"]
 
-EXPOSE 3000
+EXPOSE 5173

@@ -1,4 +1,3 @@
-import type { NextPage } from "next";
 import { database } from "../firebaseConfig";
 import { ref, set, onValue } from "firebase/database";
 import { v4 as uuidv4 } from "uuid";
@@ -14,7 +13,7 @@ interface Message {
   content: string;
 }
 
-const Home: NextPage = () => {
+const Home = () => {
   const [msgs, setMsgs] = useState<JSX.Element[]>();
   const authorRef = useRef<HTMLInputElement>(null);
 
