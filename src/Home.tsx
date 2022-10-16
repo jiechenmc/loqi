@@ -47,17 +47,6 @@ const Home = () => {
   }, []);
 
   useEffect(() => {
-    //       if (toxicity > 0.01) {
-    //         alert(`Source: ${source}\nToxicity Rating: ${toxicity}`);
-    //       } else {
-    //         const messageID = uuidv4();
-    //         let authorName = auth.currentUser?.email;
-
-    //         set(ref(database, "global/messages/" + messageID), {
-    //           content: source,
-    //           author: authorName,
-    //         });
-    //       }
     fetch("/api/toxicity", {
       headers: { "Content-Type": "application/json" },
       method: "POST",
@@ -65,7 +54,19 @@ const Home = () => {
     }).then((resp) => resp.json().then((d) => setTox(d)));
   }, [message]);
 
-  console.log(tox);
+  useEffect(() => {
+    if (tox.toxicity > 0.01) {
+      alert(`Source: ${message}\nToxicity Rating: ${tox.toxicity}`);
+    } else if (message !== "") {
+      const messageID = uuidv4();
+      let authorName = auth.currentUser?.email;
+      set(ref(database, "global/messages/" + messageID), {
+        content: message,
+        author: authorName,
+      });
+    }
+  }, [tox]);
+
   return (
     <div>
       <form
