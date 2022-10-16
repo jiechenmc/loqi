@@ -9,11 +9,11 @@ services:
       - ./hateDetection:/app
     restart: always
 
-  next:
+  react:
     container_name: react
     build: .
     ports:
       - 5173:5173
     volumes:
-      - .:/app
+      - ./src:/app/src
     restart: always
