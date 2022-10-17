@@ -59,7 +59,9 @@ const Home = () => {
       alert(`Source: ${message}\nToxicity Rating: ${tox.toxicity}`);
     } else if (message !== "") {
       const messageID = uuidv4();
-      let authorName = auth.currentUser?.email;
+      let authorName = auth.currentUser?.displayName
+        ? auth.currentUser.displayName
+        : auth.currentUser?.email;
       set(ref(database, "global/messages/" + messageID), {
         content: message,
         author: authorName,

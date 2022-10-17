@@ -1,5 +1,9 @@
 import { Dispatch, SetStateAction, useRef, useState } from "react";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import {
+  createUserWithEmailAndPassword,
+  GoogleAuthProvider,
+  signInWithPopup,
+} from "firebase/auth";
 import { auth } from "./App";
 
 interface LoginPageInterface {
@@ -40,6 +44,32 @@ const Login = ({ setLoginStatus }: LoginPageInterface) => {
       });
   };
 
+  const handleGoogleAuth = () => {
+    const provider = new GoogleAuthProvider();
+    provider.setCustomParameters({ hd: "stonybrook.edu" });
+    signInWithPopup(auth, provider)
+      .then((result) => {
+        // This gives you a Google Access Token. You can use it to access the Google API.
+        const credential = GoogleAuthProvider.credentialFromResult(result);
+        const token = credential?.accessToken;
+        // The signed-in user info.
+        const user = result.user;
+        console.log(user);
+        setLoginStatus(true);
+        // ...
+      })
+      .catch((error) => {
+        // Handle Errors here.
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        // The email of the user's account used.
+        const email = error.customData.email;
+        // The AuthCredential type that was used.
+        const credential = GoogleAuthProvider.credentialFromError(error);
+        // ...
+      });
+  };
+
   const handleSignIn = () => {
     if (emailRef.current && passwordRef.current) {
       const em = emailRef.current.value;
@@ -71,6 +101,7 @@ const Login = ({ setLoginStatus }: LoginPageInterface) => {
         <button onClick={handleSignIn} className="border-2">
           Sign In
         </button>
+        <button onClick={handleGoogleAuth}>Google</button>
       </form>
     </div>
   );
