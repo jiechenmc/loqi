@@ -90,8 +90,18 @@ const Home = () => {
           Send
         </button>
       </form>
-      <div>User name: {auth.currentUser?.displayName}</div>
-      <img src={auth.currentUser?.photoURL}></img>
+      <div className="my-5 p-2 border">
+        <div>User name: {auth.currentUser?.displayName}</div>
+        <img
+          src={
+            auth.currentUser?.photoURL !== null
+              ? auth.currentUser?.photoURL
+              : "#"
+          }
+          alt="User Profile Picture"
+        ></img>
+      </div>
+
       <div id="messageBox">{msgs}</div>
     </div>
   );
