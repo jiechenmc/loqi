@@ -10,11 +10,22 @@ interface LoginPageInterface {
   setLoginStatus: Dispatch<SetStateAction<boolean>>;
 }
 
+interface UniversitySettings {
+  hd: string;
+  colors: string;
+}
+
 const Login = ({ setLoginStatus }: LoginPageInterface) => {
+  let uni: { [key: string]: UniversitySettings } = {
+    "Stony Brook University": { hd: "stonybrook.edu", colors: "" },
+    "Binghamton University": { hd: "binghamton.edu", colors: "" },
+  };
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const emailRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
+  const uniRef = useRef<HTMLSelectElement>(null);
 
   const handleSignUp = () => {
     if (emailRef.current && passwordRef.current) {
@@ -46,7 +57,10 @@ const Login = ({ setLoginStatus }: LoginPageInterface) => {
 
   const handleGoogleAuth = () => {
     const provider = new GoogleAuthProvider();
-    provider.setCustomParameters({ hd: "stonybrook.edu" });
+    if (uniRef.current) {
+      const hd = uni[uniRef.current.value].hd;
+      provider.setCustomParameters({ hd: hd });
+    }
     signInWithPopup(auth, provider)
       .then((result) => {
         // This gives you a Google Access Token. You can use it to access the Google API.
@@ -101,8 +115,10 @@ const Login = ({ setLoginStatus }: LoginPageInterface) => {
         <button onClick={handleSignIn} className="border-2">
           Sign In
         </button>
-        <select className="border-2 border-red-500">
-          <option>Stony Brook University</option>
+        <select ref={uniRef} className="border-2 border-red-500">
+          {Object.keys(uni).map((e) => {
+            return <option>{e}</option>;
+          })}
         </select>
         <button
           onClick={handleGoogleAuth}
