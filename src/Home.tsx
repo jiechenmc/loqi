@@ -14,6 +14,15 @@ interface Message {
 }
 
 const Home = () => {
+  const uniLookUp: { [key: string]: string } = {
+    "stonybrook.edu": "Stony Brook University",
+    "binghamton.edu": "Binghamton University",
+  };
+
+  const currUser = auth.currentUser!;
+  const domain: string = currUser.email?.match(/\w+.edu/gm)?.toString()!;
+  const university = uniLookUp[domain];
+
   const [msgs, setMsgs] = useState<JSX.Element[]>();
   const [message, setMessage] = useState("");
   const [tox, setTox] = useState<ToxicityResponse>({
@@ -29,7 +38,7 @@ const Home = () => {
   };
 
   useEffect(() => {
-    const messagesRef = ref(database, "global/messages/");
+    const messagesRef = ref(database, `${university}/messages/`);
     onValue(messagesRef, (snapshot) => {
       const data = snapshot.val();
       if (data != null) {
@@ -59,10 +68,10 @@ const Home = () => {
       alert(`Source: ${message}\nToxicity Rating: ${tox.toxicity}`);
     } else if (message !== "") {
       const messageID = uuidv4();
-      let authorName = auth.currentUser?.displayName
-        ? auth.currentUser.displayName
-        : auth.currentUser?.email;
-      set(ref(database, "global/messages/" + messageID), {
+      let authorName =
+        currUser.displayName !== null ? currUser.displayName : currUser.email;
+      console.log(`${university}/messages/` + messageID);
+      set(ref(database, `${university}/messages/` + messageID), {
         content: message,
         author: authorName,
       });
@@ -91,15 +100,12 @@ const Home = () => {
         </button>
       </form>
       <div className="my-5 p-2 border">
-        <div>User name: {auth.currentUser?.displayName}</div>
+        <div>User name: {currUser.displayName}</div>
         <img
-          src={
-            auth.currentUser?.photoURL !== null
-              ? auth.currentUser?.photoURL
-              : "#"
-          }
+          src={currUser.photoURL !== null ? currUser.photoURL : "#"}
           alt="User Profile Picture"
         ></img>
+        <div>University: {university}</div>
       </div>
 
       <div id="messageBox">{msgs}</div>

@@ -21,38 +21,33 @@ const Login = ({ setLoginStatus }: LoginPageInterface) => {
     "Binghamton University": { hd: "binghamton.edu", colors: "" },
   };
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const emailRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
   const uniRef = useRef<HTMLSelectElement>(null);
 
   const handleSignUp = () => {
     if (emailRef.current && passwordRef.current) {
-      const em = emailRef.current.value;
-      const pw = passwordRef.current.value;
+      const email = emailRef.current.value;
+      const password = passwordRef.current.value;
 
-      setEmail(em);
-      setPassword(pw);
+      createUserWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+          // Signed in
+          const user = userCredential.user;
+          console.log(user);
+          setLoginStatus(true);
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          console.log(errorCode);
+          console.log(errorMessage);
+          // ...
+        });
 
       emailRef.current.value = "";
       passwordRef.current.value = "";
     }
-
-    createUserWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        // Signed in
-        const user = userCredential.user;
-        console.log(user);
-        setLoginStatus(true);
-      })
-      .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        console.log(errorCode);
-        console.log(errorMessage);
-        // ...
-      });
   };
 
   const handleGoogleAuth = () => {
@@ -84,19 +79,6 @@ const Login = ({ setLoginStatus }: LoginPageInterface) => {
       });
   };
 
-  const handleSignIn = () => {
-    if (emailRef.current && passwordRef.current) {
-      const em = emailRef.current.value;
-      const pw = passwordRef.current.value;
-
-      setEmail(em);
-      setPassword(pw);
-
-      emailRef.current.value = "";
-      passwordRef.current.value = "";
-    }
-  };
-
   return (
     <div id="auth-container">
       <form
@@ -110,14 +92,12 @@ const Login = ({ setLoginStatus }: LoginPageInterface) => {
         <label>Password: </label>
         <input ref={passwordRef} className="border-2" type="text"></input>
         <button onClick={handleSignUp} className="border-2">
-          Sign Up
+          Impersonate
         </button>
-        <button onClick={handleSignIn} className="border-2">
-          Sign In
-        </button>
+
         <select ref={uniRef} className="border-2 border-red-500">
           {Object.keys(uni).map((e) => {
-            return <option>{e}</option>;
+            return <option key={e}>{e}</option>;
           })}
         </select>
         <button
