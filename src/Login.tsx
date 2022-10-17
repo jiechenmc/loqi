@@ -84,9 +84,9 @@ const Login = ({ setLoginStatus }: LoginPageInterface) => {
   };
 
   return (
-    <div id="firebaseui-auth-container">
+    <div id="auth-container">
       <form
-        className="flex gap-1"
+        className="flex gap-2 mt-2"
         onSubmit={(e) => {
           e.preventDefault();
         }}
@@ -101,7 +101,15 @@ const Login = ({ setLoginStatus }: LoginPageInterface) => {
         <button onClick={handleSignIn} className="border-2">
           Sign In
         </button>
-        <button onClick={handleGoogleAuth}>Google</button>
+        <select className="border-2 border-red-500">
+          <option>Stony Brook University</option>
+        </select>
+        <button
+          onClick={handleGoogleAuth}
+          className="border-2 border-green-200"
+        >
+          Google
+        </button>
       </form>
     </div>
   );
