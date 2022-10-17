@@ -90,6 +90,8 @@ const Home = () => {
           Send
         </button>
       </form>
+      <div>User name: {auth.currentUser?.displayName}</div>
+      <img src={auth.currentUser?.photoURL}></img>
       <div id="messageBox">{msgs}</div>
     </div>
   );
