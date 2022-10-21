@@ -65,7 +65,10 @@ const Home = () => {
           // if a user types in a message within the first couple of seconds
           // the message will be sent twice
           // WHY?
-          // because by the time the promise resolves
+          // onMount this hook sent out a fetch request
+          // and when we sent a new message this hook will send out another
+          // There will be 2 outgoing fetch request
+          // This is asynchronous so by the time the promise resolves
           // message is no longer ""
           // which will execute this code block
           // leading to 2 messages in the database
