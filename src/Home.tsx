@@ -25,10 +25,6 @@ const Home = () => {
 
   const [msgs, setMsgs] = useState<JSX.Element[]>();
   const [message, setMessage] = useState("");
-  const [tox, setTox] = useState<ToxicityResponse>({
-    source: "",
-    toxicity: 0.0,
-  });
   const inputEl = useRef<HTMLInputElement>(null);
 
   const handleSend = () => {
@@ -56,27 +52,31 @@ const Home = () => {
   }, []);
 
   useEffect(() => {
-    fetch("/api/toxicity", {
-      headers: { "Content-Type": "application/json" },
-      method: "POST",
-      body: JSON.stringify({ message: message }),
-    }).then((resp) => resp.json().then((d) => setTox(d)));
-  }, [message]);
-
-  useEffect(() => {
-    if (tox.toxicity > 0.01) {
-      alert(`Source: ${message}\nToxicity Rating: ${tox.toxicity}`);
-    } else if (message !== "") {
-      const messageID = uuidv4();
-      let authorName =
-        currUser.displayName !== null ? currUser.displayName : currUser.email;
-      console.log(`${university}/messages/` + messageID);
-      set(ref(database, `${university}/messages/` + messageID), {
-        content: message,
-        author: authorName,
-      });
+    if (message !== "") {
+      fetch("/api/toxicity", {
+        headers: { "Content-Type": "application/json" },
+        method: "POST",
+        body: JSON.stringify({ message: message }),
+      }).then((resp) =>
+        resp.json().then((tox) => {
+          if (tox.toxicity > 0.01) {
+            alert(`Source: ${message}\nToxicity Rating: ${tox.toxicity}`);
+          } else {
+            const messageID = uuidv4();
+            let authorName =
+              currUser.displayName !== null
+                ? currUser.displayName
+                : currUser.email;
+            console.log(`${university}/messages/` + messageID);
+            set(ref(database, `${university}/messages/` + messageID), {
+              content: message,
+              author: authorName,
+            });
+          }
+        })
+      );
     }
-  }, [tox]);
+  }, [message]);
 
   return (
     <div>
