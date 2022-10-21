@@ -11,6 +11,7 @@ interface ToxicityResponse {
 interface Message {
   author: string;
   content: string;
+  createdAt: number;
 }
 
 const Home = () => {
@@ -37,6 +38,7 @@ const Home = () => {
     const messagesRef = ref(database, `${university}/messages/`);
     onValue(messagesRef, (snapshot) => {
       const data = snapshot.val();
+      console.log(data);
       if (data != null) {
         let tst = Object.values(data).map((e) => {
           let m = e as Message;
@@ -71,6 +73,7 @@ const Home = () => {
             set(ref(database, `${university}/messages/` + messageID), {
               content: message,
               author: authorName,
+              createdAt: Date.now(),
             });
           }
         })
