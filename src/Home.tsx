@@ -52,41 +52,30 @@ const Home = () => {
   }, []);
 
   useEffect(() => {
-    // if (message !== "") {
-    fetch("/api/toxicity", {
-      headers: { "Content-Type": "application/json" },
-      method: "POST",
-      body: JSON.stringify({ message: message }),
-    }).then((resp) =>
-      resp.json().then((tox) => {
-        if (tox.toxicity > 0.01) {
-          alert(`Source: ${message}\nToxicity Rating: ${tox.toxicity}`);
-        } else if (message !== "") {
-          // if a user types in a message within the first couple of seconds
-          // the message will be sent twice
-          // WHY?
-          // onMount this hook sent out a fetch request
-          // and when we sent a new message this hook will send out another
-          // There will be 2 outgoing fetch request
-          // This is asynchronous so by the time the promise resolves
-          // message is no longer ""
-          // which will execute this code block
-          // leading to 2 messages in the database
-
-          const messageID = uuidv4();
-          let authorName =
-            currUser.displayName !== null
-              ? currUser.displayName
-              : currUser.email;
-          console.log(`${university}/messages/` + messageID);
-          set(ref(database, `${university}/messages/` + messageID), {
-            content: message,
-            author: authorName,
-          });
-        }
-      })
-    );
-    // }
+    if (message !== "") {
+      fetch("/api/toxicity", {
+        headers: { "Content-Type": "application/json" },
+        method: "POST",
+        body: JSON.stringify({ message: message }),
+      }).then((resp) =>
+        resp.json().then((tox) => {
+          if (tox.toxicity > 0.01) {
+            alert(`Source: ${message}\nToxicity Rating: ${tox.toxicity}`);
+          } else {
+            const messageID = uuidv4();
+            let authorName =
+              currUser.displayName !== null
+                ? currUser.displayName
+                : currUser.email;
+            console.log(`${university}/messages/` + messageID);
+            set(ref(database, `${university}/messages/` + messageID), {
+              content: message,
+              author: authorName,
+            });
+          }
+        })
+      );
+    }
   }, [message]);
 
   return (
