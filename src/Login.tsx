@@ -1,19 +1,10 @@
-import { Dispatch, SetStateAction, useRef, useState } from "react";
+import { useRef } from "react";
 import {
   createUserWithEmailAndPassword,
   GoogleAuthProvider,
   signInWithPopup,
 } from "firebase/auth";
 import { auth } from "./App";
-
-interface LoginPageInterface {
-  setLoginStatus: Dispatch<SetStateAction<boolean>>;
-}
-
-interface UniversitySettings {
-  hd: string;
-  colors: string;
-}
 
 const Login = ({ setLoginStatus }: LoginPageInterface) => {
   let uni: { [key: string]: UniversitySettings } = {

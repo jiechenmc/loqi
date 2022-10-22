@@ -3,17 +3,6 @@ import { ref, set, onValue } from "firebase/database";
 import { v4 as uuidv4 } from "uuid";
 import { useEffect, useState, useRef } from "react";
 
-interface ToxicityResponse {
-  source: string;
-  toxicity: number;
-}
-
-interface Message {
-  author: string;
-  content: string;
-  createdAt: number;
-}
-
 const Home = () => {
   const uniLookUp: { [key: string]: string } = {
     "stonybrook.edu": "Stony Brook University",
