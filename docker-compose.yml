@@ -1,13 +1,13 @@
 version: "3"
 services:
-  hatedetectionserver:
-    container_name: hateDetection
-    build: ./hateDetection
-    ports:
-      - 8000:8000
-    volumes:
-      - ./hateDetection:/app
-    restart: always
+  # hatedetectionserver:
+  #   container_name: hateDetection
+  #   build: ./hateDetection
+  #   ports:
+  #     - 8000:8000
+  #   volumes:
+  #     - ./hateDetection:/app
+  #   restart: always
 
   react:
     container_name: react

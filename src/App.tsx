@@ -4,6 +4,8 @@ import Login from "./Login";
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getDatabase } from "firebase/database";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Room from "./Room";
 
 const firebaseConfig = {
   apiKey: "AIzaSyA2ffbETwL8hupSveo6d55YTOun0kYzCC4",
@@ -25,7 +27,17 @@ function App() {
 
   return (
     <div className="App">
-      {isLoggedIn ? <Home /> : <Login setLoginStatus={setIsLoggedIn} />}
+      <Router>
+        <Routes>
+          <Route
+            path="/"
+            element={
+              isLoggedIn ? <Home /> : <Login setLoginStatus={setIsLoggedIn} />
+            }
+          ></Route>
+          <Route path="/rooms/:id" element={<Room />}></Route>
+        </Routes>
+      </Router>
     </div>
   );
 }

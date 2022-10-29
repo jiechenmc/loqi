@@ -24,4 +24,13 @@ declare global {
   type User = {
     name: string;
   };
+
+  interface Room {
+    professor: string;
+    roomID: string;
+    users: User[];
+    totalMessages: number;
+    totalUsers: number;
+    banner: string;
+  }
 }
