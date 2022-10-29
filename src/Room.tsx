@@ -8,13 +8,27 @@ const Room = () => {
   const { id } = useParams();
   const [msg, setMsgs] = useState<JSX.Element[]>();
   const [count, setCount] = useState();
+  const [currUser, setCurrUser] = useState({
+    displayName: "TEST",
+    email: "jie@stonybrook.edu",
+  });
 
   const uniLookUp: { [key: string]: string } = {
     "stonybrook.edu": "Stony Brook University",
     "binghamton.edu": "Binghamton University",
   };
 
-  const currUser = auth.currentUser!;
+  useEffect(() => {
+    auth.onAuthStateChanged((user) => {
+      if (auth.currentUser) {
+        setCurrUser(auth.currentUser!);
+        console.log("loggedin");
+      } else {
+        console.log("NOT LOGGED IN");
+      }
+    });
+  }, []);
+
   const domain: string = currUser.email?.match(/\w+.edu/gm)?.toString()!;
   const university = uniLookUp[domain];
   const [message, setMessage] = useState("");
@@ -48,7 +62,7 @@ const Room = () => {
 
   useEffect(() => {
     if (message !== "") {
-      console.log("YO");
+      console.log(currUser);
       const messageID = uuidv4();
       let authorName =
         currUser.displayName !== null ? currUser.displayName : currUser.email;
