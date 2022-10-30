@@ -10,7 +10,12 @@ const RoomCard = ({
   return (
     <div>
       <div className="flex max-w-sm rounded shadow-lg">
-        <img className="w-140px" src={banner} alt="Sunset in the mountains" />
+        <img
+          width={140}
+          height={140}
+          src={banner}
+          alt="Sunset in the mountains"
+        />
         <div className="px-6 py-4">
           <div className="font-bold text-xl mb-2">{roomID}</div>
           <div>{professor}</div>

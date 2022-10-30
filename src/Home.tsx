@@ -1,5 +1,6 @@
 import { database, auth } from "./App";
 import { ref, set, onValue } from "firebase/database";
+import { signOut } from "firebase/auth";
 import { v4 as uuidv4 } from "uuid";
 import { useEffect, useState, useRef } from "react";
 import RoomCard from "./RoomCard";
@@ -21,8 +22,12 @@ const Home = () => {
   const inputEl = useRef<HTMLInputElement>(null);
 
   const handleSend = () => {
-    if (inputEl.current) {
-      setMessage(inputEl.current.value);
+    try {
+      auth.signOut().then(() => {
+        window.location.href = "/";
+      });
+    } catch {
+      console.log("Error Signing Out");
     }
   };
 
@@ -46,25 +51,11 @@ const Home = () => {
 
   return (
     <div>
-      <form
-        id="messageForm"
-        method="POST"
-        onSubmit={(e) => {
-          e.preventDefault();
-        }}
-      >
-        <label htmlFor="message">Message:</label>
-        <input
-          ref={inputEl}
-          className="border"
-          type="text"
-          id="message"
-          name="message"
-        />
-        <button type="button" onClick={handleSend}>
-          Send
+      <div className="absolute right-0">
+        <button className="relative right-0" type="button" onClick={handleSend}>
+          Sign Out
         </button>
-      </form>
+      </div>
       <div className="my-5 p-2 border">
         <div>User name: {currUser.displayName}</div>
         <img
