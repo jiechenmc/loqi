@@ -7,7 +7,7 @@ import { database, auth } from "./App";
 const Room = () => {
   const { id } = useParams();
   const [msg, setMsgs] = useState<JSX.Element[]>();
-  const [count, setCount] = useState();
+  const [count, setCount] = useState(0);
   const [currUser, setCurrUser] = useState({
     displayName: "TEST",
     email: "jie@stonybrook.edu",
@@ -41,7 +41,22 @@ const Room = () => {
   };
 
   useEffect(() => {
-    const messagesRef = ref(database, `${university}/rooms/${id}`);
+    const metaRef = ref(
+      database,
+      `meta/universities/rooms/${university}/${id}`
+    );
+    onValue(metaRef, (snapshot) => {
+      const data = snapshot.val();
+      console.log(data);
+      if (data != null) {
+        console.log(data);
+        setCount(data["totalMessageCount"]);
+      } else {
+        console.log("Not loaded");
+      }
+    });
+
+    const messagesRef = ref(database, `data/rooms/${university}/${id}`);
     onValue(messagesRef, (snapshot) => {
       const data = snapshot.val();
       if (data != null) {
@@ -57,17 +72,6 @@ const Room = () => {
         setMsgs(tst);
       }
     });
-
-    const metaRef = ref(
-      database,
-      `meta/universities/rooms/${university}/${id}`
-    );
-    onValue(metaRef, (snapshot) => {
-      const data = snapshot.val();
-      if (data != null) {
-        setCount(data["totalMessageCount"]);
-      }
-    });
   }, []);
 
   useEffect(() => {
@@ -76,14 +80,14 @@ const Room = () => {
       const messageID = uuidv4();
       let authorName =
         currUser.displayName !== null ? currUser.displayName : currUser.email;
-      const dbPath = `${university}/rooms/${id}/messages/` + messageID;
+      const dbPath = `data/rooms/${university}/${id}/messages/` + messageID;
       set(ref(database, dbPath), {
         content: message,
         author: authorName,
         createdAt: Date.now(),
       }).then(() => {
         update(ref(database, `meta/universities/rooms/${university}/${id}/`), {
-          totalMessageCount: count! + 1,
+          totalMessageCount: count + 1,
         });
       });
     }
