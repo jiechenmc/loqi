@@ -55,7 +55,17 @@ const Room = () => {
           );
         });
         setMsgs(tst);
-        setCount(data["totalMessages"]);
+      }
+    });
+
+    const metaRef = ref(
+      database,
+      `meta/universities/rooms/${university}/${id}`
+    );
+    onValue(metaRef, (snapshot) => {
+      const data = snapshot.val();
+      if (data != null) {
+        setCount(data["totalMessageCount"]);
       }
     });
   }, []);
@@ -72,8 +82,8 @@ const Room = () => {
         author: authorName,
         createdAt: Date.now(),
       }).then(() => {
-        update(ref(database, `${university}/rooms/${id}/`), {
-          totalMessages: count! + 1,
+        update(ref(database, `meta/universities/rooms/${university}/${id}/`), {
+          totalMessageCount: count! + 1,
         });
       });
     }

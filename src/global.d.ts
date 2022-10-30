@@ -29,8 +29,8 @@ declare global {
     professor: string;
     roomID: string;
     users: User[];
-    totalMessages: number;
-    totalUsers: number;
+    totalMessageCount: number;
+    currentUserCount: number;
     banner: string;
   }
 }

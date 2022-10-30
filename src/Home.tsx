@@ -26,8 +26,9 @@ const Home = () => {
     }
   };
 
+  // fetch room meta data
   useEffect(() => {
-    const messagesRef = ref(database, `${university}/rooms/`);
+    const messagesRef = ref(database, `meta/universities/rooms/${university}/`);
     onValue(messagesRef, (snapshot) => {
       const data = snapshot.val();
       console.log(data);

@@ -2,8 +2,8 @@ import { Link } from "react-router-dom";
 
 const RoomCard = ({
   roomID,
-  totalMessages,
-  totalUsers,
+  totalMessageCount,
+  currentUserCount,
   professor,
   banner,
 }: Room) => {
@@ -16,8 +16,8 @@ const RoomCard = ({
           <div>{professor}</div>
         </div>
         <div className="flex-col">
-          <div>Messages: {totalMessages}</div>
-          <div>Users: {totalUsers}</div>
+          <div>Messages: {totalMessageCount}</div>
+          <div>Users: {currentUserCount}</div>
           <Link to={`/rooms/${roomID}`}>
             <button className="border" type="button">
               Click Me!
