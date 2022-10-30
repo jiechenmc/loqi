@@ -40,7 +40,22 @@ const Room = () => {
     }
   };
 
+  // this is dependent on currUser because when the user gets verified
+  // we need to calculate what university they are in again, so the right data is fetched
   useEffect(() => {
+    const metaRef = ref(
+      database,
+      `meta/universities/rooms/${university}/${id}`
+    );
+    onValue(metaRef, (snapshot) => {
+      const data = snapshot.val();
+      console.log(data);
+      if (data != null) {
+        console.log(data);
+        setCount(data["totalMessageCount"]);
+      }
+    });
+
     const messagesRef = ref(database, `data/rooms/${university}/${id}`);
     onValue(messagesRef, (snapshot) => {
       const data = snapshot.val();
@@ -57,22 +72,7 @@ const Room = () => {
         setMsgs(tst);
       }
     });
-  }, []);
-
-  useEffect(() => {
-    const metaRef = ref(
-      database,
-      `meta/universities/rooms/${university}/${id}`
-    );
-    onValue(metaRef, (snapshot) => {
-      const data = snapshot.val();
-      console.log(data);
-      if (data != null) {
-        console.log(data);
-        setCount(data["totalMessageCount"]);
-      }
-    });
-  }, [msg]);
+  }, [currUser]);
 
   useEffect(() => {
     if (message !== "") {
