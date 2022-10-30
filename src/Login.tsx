@@ -1,10 +1,9 @@
-import { useRef } from "react";
+import { useRef, useEffect } from "react";
 import {
   createUserWithEmailAndPassword,
   GoogleAuthProvider,
   signInWithPopup,
   browserSessionPersistence,
-  inMemoryPersistence,
 } from "firebase/auth";
 import { auth } from "./App";
 
@@ -13,6 +12,17 @@ const Login = ({ setLoginStatus }: LoginPageInterface) => {
     "Stony Brook University": { hd: "stonybrook.edu", colors: "" },
     "Binghamton University": { hd: "binghamton.edu", colors: "" },
   };
+
+  useEffect(() => {
+    auth.onAuthStateChanged((user) => {
+      if (auth.currentUser) {
+        setLoginStatus(true);
+        console.log("loggedin");
+      } else {
+        console.log("NOT LOGGED IN");
+      }
+    });
+  }, []);
 
   const emailRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
