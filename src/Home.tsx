@@ -22,13 +22,14 @@ const Home = () => {
   const inputEl = useRef<HTMLInputElement>(null);
 
   const handleSend = () => {
-    try {
-      auth.signOut().then(() => {
+    auth
+      .signOut()
+      .then(() => {
         window.location.href = "/";
+      })
+      .catch((e) => {
+        console.log(e);
       });
-    } catch {
-      console.log("Error Signing Out");
-    }
   };
 
   // fetch room meta data
