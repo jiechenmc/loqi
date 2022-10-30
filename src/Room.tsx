@@ -7,7 +7,7 @@ import { database, auth } from "./App";
 const Room = () => {
   const { id } = useParams();
   const [msg, setMsgs] = useState<JSX.Element[]>();
-  const [count, setCount] = useState(0);
+  const [count, setCount] = useState();
   const [currUser, setCurrUser] = useState({
     displayName: "TEST",
     email: "jie@stonybrook.edu",
@@ -41,21 +41,6 @@ const Room = () => {
   };
 
   useEffect(() => {
-    const metaRef = ref(
-      database,
-      `meta/universities/rooms/${university}/${id}`
-    );
-    onValue(metaRef, (snapshot) => {
-      const data = snapshot.val();
-      console.log(data);
-      if (data != null) {
-        console.log(data);
-        setCount(data["totalMessageCount"]);
-      } else {
-        console.log("Not loaded");
-      }
-    });
-
     const messagesRef = ref(database, `data/rooms/${university}/${id}`);
     onValue(messagesRef, (snapshot) => {
       const data = snapshot.val();
@@ -75,6 +60,21 @@ const Room = () => {
   }, []);
 
   useEffect(() => {
+    const metaRef = ref(
+      database,
+      `meta/universities/rooms/${university}/${id}`
+    );
+    onValue(metaRef, (snapshot) => {
+      const data = snapshot.val();
+      console.log(data);
+      if (data != null) {
+        console.log(data);
+        setCount(data["totalMessageCount"]);
+      }
+    });
+  }, [msg]);
+
+  useEffect(() => {
     if (message !== "") {
       console.log(currUser);
       const messageID = uuidv4();
@@ -87,7 +87,7 @@ const Room = () => {
         createdAt: Date.now(),
       }).then(() => {
         update(ref(database, `meta/universities/rooms/${university}/${id}/`), {
-          totalMessageCount: count + 1,
+          totalMessageCount: count! + 1,
         });
       });
     }
