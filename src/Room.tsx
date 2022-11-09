@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import { ref, set, onValue, update } from "firebase/database";
